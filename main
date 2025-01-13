@@ -75,5 +75,5 @@ done
 
 ##### Merge tractmeasure files in one
 
-singularity exec -e docker://dsistudio/dsistudio dsi_studio python ./merge_tractmeasures.py ./stat ./stat/tractmeasures.tsv
+singularity exec -e docker://brainlife/dipy:1.4.1 python ./merge_tractmeasures.py ./stat ./stat/tractmeasures.tsv
 echo "Output file stored as: "stat/tractmeasures.tsv
