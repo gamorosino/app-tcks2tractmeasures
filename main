@@ -48,9 +48,8 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   # move file to tt folder
   mkdir -p tt
-  mv data.${trk##*/}.tt.gz tt/tt.gz
-
-  tt=tt/tt.gz
+  tt=tt/$( basename ${trk//'.trk'/''} ).tt.gz
+  mv data.${trk##*/}.tt.gz ${tt}
 
   ##### analyze tt file
 
@@ -67,7 +66,9 @@ for tck in $( ls ${tcks}/*.tck ); do
   fi
 
   cat stat/tractmeasure.tsv
-  cp stat/$( basename ${tck//'.tck'/''} )_tractmeasure.tsv
+  stat_track=stat/$( basename ${tck//'.tck'/''} )_tractmeasure.tsv
+  cp stat/tractmeasure.tsv ${stat_track}
+
   echo "DSI Studio analysis completed successfully!"
-  echo "Output file stored as: "stat/tractmeasure.tsv
+  echo "Output file stored as: "${stat_track}
 done
