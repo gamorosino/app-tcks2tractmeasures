@@ -26,7 +26,7 @@ else
 fi
 
 
-for tck in tcks; do
+for tck in $( ls ${tcks}/*.tck ); do
   
   ##### Convert tck to trk
 
