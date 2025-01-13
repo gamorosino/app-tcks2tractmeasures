@@ -1,0 +1,71 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,vmem=8g,walltime=0:05:00
+#PBS -N app-tracts-properties
+#PBS -V
+
+# Extract fields from config.json
+
+tcks=$(jq -r .tcks config.json)
+t1w=$(jq -r .t1 config.json)
+t2w=$(jq -r .t2 config.json)
+parc=$(jq -r .parc config.json)
+mask=$(jq -r .mask config.json)
+
+# Assign the first available field to 'anat'
+if [ -n "$t1w" ] && [ "$t1w" != "null" ]; then
+    anat=$t1w
+elif [ -n "$21w" ] && [ "$t1w" != "null" ]; then
+    anat=$t2w
+elif [ -n "$parc" ] && [ "$parc" != "null" ]; then
+    anat=$parc
+elif [ -n "$mask" ] && [ "$mask" != "null" ]; then
+    anat=$mask
+else
+    echo "Error: No valid anatomical reference found in config.json" >&2
+    exit 1
+fi
+
+
+for tck in tcks; do
+  
+  ##### Convert tck to trk
+
+  echo "processing track" ${tck} "..."
+
+  singularity exec -e docker://brainlife/dipy:1.4.1 python ./tck2trk.py ${anat} ${tck}
+  mkdir trk
+  cp ${tck//'.tck'/'.trk'} ./trk
+
+  ##### Convert trk to tt
+
+  gzip -c ${trk} > data.${trk##*/}.gz
+
+  singularity exec -e docker://dsistudio/dsistudio dsi_studio --action=exp --source=data.${trk##*/}.gz --output=data.${trk##*/}.tt.gz
+
+  rm -f data.${trk##*/}.gz
+
+  # move file to tt folder
+  mkdir -p tt
+  mv data.${trk##*/}.tt.gz tt/tt.gz
+
+  tt=tt/tt.gz
+
+  ##### analyze tt file
+
+  echo "Starting DSI Studio analysis..."
+  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 dsi_studio --action=ana --source="${tt}" --tract="${tt}" --export=stat
+
+  # Move file to stat folder
+  mkdir -p stat
+  if [[ -f "${tt}.stat.txt" ]]; then
+    mv "${tt}.stat.txt" stat/tractmeasure.tsv
+  else
+    echo "ERROR: Output file not generated. Check DSI Studio logs."
+    exit 1
+  fi
+
+  cat stat/tractmeasure.tsv
+  cp stat/$( basename ${tck//'.tck'/''} )_tractmeasure.tsv
+  echo "DSI Studio analysis completed successfully!"
+  echo "Output file stored as: "stat/tractmeasure.tsv
+done
