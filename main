@@ -36,6 +36,8 @@ for tck in $( ls ${tcks}/*.tck ); do
   mkdir trk
   cp ${tck//'.tck'/'.trk'} ./trk
 
+  trk=./trk
+
   ##### Convert trk to tt
 
   gzip -c ${trk} > data.${trk##*/}.gz
