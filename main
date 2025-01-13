@@ -73,5 +73,7 @@ for tck in $( ls ${tcks}/*.tck ); do
 
 done
 
-singularity exec -e docker://dsistudio/dsistudio dsi_studio python ./mege_tractmeasures.py stat stat/tractmeasures.tsv
+##### Merge tractmeasure files in one
+
+singularity exec -e docker://dsistudio/dsistudio dsi_studio python ./merge_tractmeasures.py stat stat/tractmeasures.tsv
 echo "Output file stored as: "stat/tractmeasures.tsv
