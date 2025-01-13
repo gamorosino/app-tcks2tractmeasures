@@ -67,8 +67,11 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   cat stat/tractmeasure.tsv
   stat_track=stat/$( basename ${tck//'.tck'/''} )_tractmeasure.tsv
-  cp stat/tractmeasure.tsv ${stat_track}
+  mv stat/tractmeasure.tsv ${stat_track}
 
   echo "DSI Studio analysis completed successfully!"
-  echo "Output file stored as: "${stat_track}
+
 done
+
+singularity exec -e docker://dsistudio/dsistudio dsi_studio python ./mege_tractmeasures.py stat stat/tractmeasures.tsv
+echo "Output file stored as: "stat/tractmeasures.tsv
