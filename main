@@ -71,9 +71,19 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   echo "DSI Studio analysis completed successfully!"
 
+  echo 'Calculate curvature and torsion using dipy...'
+  
+  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/compute_curv_n_tors.py ${trk} --save-stats stat/curv_tors.tsv
+
+
+  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/horizontal_stack_tsv.py ${stat_track} stat/curv_tors.tsv ${stat_track}
+
+  rm stat/curv_tors.tsv
+
+
 done
 
 ##### Merge tractmeasure files in one
 
-singularity exec -e docker://brainlife/dipy:1.4.1 python ./merge_tractmeasures.py ./stat ./stat/tractmeasures.tsv
+singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/merge_tractmeasures.py ./stat ./stat/tractmeasures.tsv
 echo "Output file stored as: "stat/tractmeasures.tsv
