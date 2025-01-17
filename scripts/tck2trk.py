@@ -5,6 +5,10 @@ from nibabel.streamlines import Field
 from nibabel.orientations import aff2axcodes
 import sys
 
+
+## Acknowledgments
+# Based on the script of Marc-Alexandre Côté (https://gist.github.com/MarcCote/ea6842cc4c3950f7596fc3c8a0be0154).
+
 def build_argparser_tck2trk():
     DESCRIPTION = "Convert tractograms (TCK -> TRK)."
     p = argparse.ArgumentParser(description=DESCRIPTION)
