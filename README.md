@@ -38,7 +38,7 @@ You can run the `tcks2tractmeasures` app on the [Brainlife.io platform](https://
    ```bash
    bl app run --id 67858b5e81d348aa56483324 --project <project_id> --input tcks:<tcks_id> --input reference:<reference_id>
    ```
-   Replace `<app_id>`, `<project_id>`, and input IDs with the appropriate values. The output will be saved in the specified project.
+   Replace `<project_id>`, and input IDs with the appropriate values. The output will be saved in the specified project.
 
 ---
 
