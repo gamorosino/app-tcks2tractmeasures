@@ -65,7 +65,6 @@ for tck in $( ls ${tcks}/*.tck ); do
     exit 1
   fi
 
-  cat stat/tractmeasure.tsv
   stat_track=stat/$( basename ${tck//'.tck'/''} ).tsv
   mv stat/tractmeasure.tsv ${stat_track}
 
@@ -80,6 +79,7 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   rm stat/curv_tors.tsv
 
+  cat stat/tractmeasure.tsv
 
 done
 
