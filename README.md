@@ -103,3 +103,6 @@ If you use this repository in your research, please cite the following:
   [DOI: 10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 
 ---
+
+## Acknowledgments
+The script for converting trk files to tck (trk2tck.py) is based on the work of Marc-Alexandre Côté (https://gist.github.com/MarcCote/ea6842cc4c3950f7596fc3c8a0be0154).
