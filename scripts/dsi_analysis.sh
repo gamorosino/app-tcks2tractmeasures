@@ -28,7 +28,7 @@
     exit 1
   fi
 
-  stat_track=stat/$( basename ${tck//'.tck'/''} ).tsv
+  stat_track=stat/$( basename ${trk//'.trk'/''} ).tsv
   mv ./stat/tractmeasure.tsv ${stat_track}
 
   echo "DSI Studio analysis completed successfully!"
