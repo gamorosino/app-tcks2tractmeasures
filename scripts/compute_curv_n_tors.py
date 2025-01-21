@@ -46,13 +46,19 @@ def compute_torsion(streamline):
 
 def calculate_tract_properties(tractogram, save_stats=None):
     streamlines = tractogram.streamlines
+    
+    # Calculate curvature and torsion for each streamline
     curvatures = [np.nanmean(np.abs(mean_curvature(s))) for s in streamlines]
     torsions = [compute_torsion(s) for s in streamlines]
-
-    # Combine results into a DataFrame
+    
+    # Compute the bundle-wide averages
+    mean_curvature = np.nanmean(curvatures)
+    mean_torsion = np.nanmean(torsions)
+    
+    # Combine results into a DataFrame with two rows
     data = {
-        "Curvature (1/mm)": curvatures,
-        "Torsion (1/mm)": torsions
+        "Metric": ["Curvature", "Torsion"],
+        "Mean Value (1/mm)": [mean_curvature, mean_torsion]
     }
     df = pd.DataFrame(data)
 
@@ -62,6 +68,7 @@ def calculate_tract_properties(tractogram, save_stats=None):
         print(f"Results saved to {save_stats}")
     else:
         print(df)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compute tract properties from a tractography file.")
