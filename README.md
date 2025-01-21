@@ -58,7 +58,7 @@ You can also run the pipeline locally by preparing a configuration file and exec
    ```json
    {
        "tcks": "/path/to/tcks",
-       "reference": "/path/to/reference.nii"
+       "t1": "/path/to/t1.nii"
    }
    ```
 
