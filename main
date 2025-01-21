@@ -30,6 +30,7 @@ for tck in $( ls ${tcks}/*.tck ); do
   
   ##### Dipy analysis
   echo "processing track" ${tck} "..."
+  trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
 
   mkdir ./dipy_stat
   dipy_stat=./dipy_stat/$( basename ${trk//'.trk'/''} ).tsv
@@ -38,11 +39,11 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   cat ${dipy_stat}
 
-  trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
+  
 
   ##### DSI analysis
-  mkdir -p dsi_stat
-  dsi_stat=dsi_stat/$( basename ${trk//'.trk'/''} ).tsv
+  mkdir -p ./dsi_stat
+  dsi_stat=./dsi_stat/$( basename ${trk//'.trk'/''} ).tsv
   
   singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/dsi_analysis.sh ${trk} ${dsi_stat}
 
@@ -52,7 +53,7 @@ for tck in $( ls ${tcks}/*.tck ); do
 
   stat_track=./stat/tractmeasure.tsv
 
-  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/hstack_tsv.py ${dsi_stat} ${dipy_stat} ${stat_track} 
+  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/vstack_tsv.py ${dsi_stat} ${dipy_stat} ${stat_track} 
 
 
   cat ${stat_track}
