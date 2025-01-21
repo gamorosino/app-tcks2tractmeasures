@@ -31,18 +31,31 @@ for tck in $( ls ${tcks}/*.tck ); do
   ##### Dipy analysis
   echo "processing track" ${tck} "..."
 
-  singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/dipy_analysis.sh ${tck} ${anat}
+  mkdir ./dipy_stat
+  dipy_stat=./dipy_stat/$( basename ${trk//'.trk'/''} ).tsv
+
+  singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/dipy_analysis.sh ${tck} ${anat} ${dipy_stat}
+
+  cat ${dipy_stat}
 
   trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
 
   ##### DSI analysis
-  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/dsi_analysis.sh ${trk}
+  mkdir -p dsi_stat
+  dsi_stat=dsi_stat/$( basename ${trk//'.trk'/''} ).tsv
+  
+  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/dsi_analysis.sh ${trk} ${dsi_stat}
 
-  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/hstack_tsv.py ${stat_track} stat/curv_tors.tsv ${stat_track}
+  cat ${dsi_stat}
 
-  rm stat/curv_tors.tsv
+  ##### merging results
 
-  cat stat/tractmeasure.tsv
+  stat_track=./stat/tractmeasure.tsv
+
+  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/hstack_tsv.py ${dsi_stat} ${dipy_stat} ${stat_track} 
+
+
+  cat ${stat_track}
 
 done
 

@@ -2,6 +2,7 @@
   #! /bin/bash
   
   trk=$1
+  dsi_stat=$2
   
   gzip -c ${trk} > data.${trk##*/}.gz
 
@@ -20,15 +21,12 @@
   dsi_studio --action=ana --source="${tt}" --tract="${tt}" --export=stat
 
   # Move file to stat folder
-  mkdir -p stat
+
   if [[ -f "${tt}.stat.txt" ]]; then
-    mv "${tt}.stat.txt" ./stat/tractmeasure.tsv
+    mv "${tt}.stat.txt" ${dsi_stat}
   else
     echo "ERROR: Output file not generated. Check DSI Studio logs."
     exit 1
   fi
-
-  stat_track=stat/$( basename ${trk//'.trk'/''} ).tsv
-  mv ./stat/tractmeasure.tsv ${stat_track}
 
   echo "DSI Studio analysis completed successfully!"

@@ -1,6 +1,7 @@
 #! /bin/bash
   tck=$1
   anat=$2
+  stat=$3
   
   exists () {                      			
 		if [ $# -lt 1 ]; then
@@ -29,4 +30,4 @@
 
   echo 'Calculate curvature and torsion using dipy...'
   
-  python ./scripts/compute_curv_n_tors.py ${trk} --save-stats ./stat/curv_tors.tsv
+  python ./scripts/compute_curv_n_tors.py ${trk} --save-stats ${stat}
