@@ -28,52 +28,15 @@ fi
 
 for tck in $( ls ${tcks}/*.tck ); do
   
-  ##### Convert tck to trk
-
+  ##### Dipy analysis
   echo "processing track" ${tck} "..."
 
-  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/tck2trk.py ${anat} ${tck}
-  mkdir trk
-  cp ${tck//'.tck'/'.trk'} ./trk
+  singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/dipy_analysis.sh ${tck} ${anat}
 
   trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
 
-  ##### Convert trk to tt
-
-  gzip -c ${trk} > data.${trk##*/}.gz
-
-  singularity exec -e docker://dsistudio/dsistudio dsi_studio --action=exp --source=data.${trk##*/}.gz --output=data.${trk##*/}.tt.gz
-
-  rm -f data.${trk##*/}.gz
-
-  # move file to tt folder
-  mkdir -p tt
-  tt=tt/$( basename ${trk//'.trk'/''} ).tt.gz
-  mv data.${trk##*/}.tt.gz ${tt}
-
-  ##### analyze tt file
-
-  echo "Starting DSI Studio analysis..."
-  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 dsi_studio --action=ana --source="${tt}" --tract="${tt}" --export=stat
-
-  # Move file to stat folder
-  mkdir -p stat
-  if [[ -f "${tt}.stat.txt" ]]; then
-    mv "${tt}.stat.txt" stat/tractmeasure.tsv
-  else
-    echo "ERROR: Output file not generated. Check DSI Studio logs."
-    exit 1
-  fi
-
-  stat_track=stat/$( basename ${tck//'.tck'/''} ).tsv
-  mv stat/tractmeasure.tsv ${stat_track}
-
-  echo "DSI Studio analysis completed successfully!"
-
-  echo 'Calculate curvature and torsion using dipy...'
-  
-  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/compute_curv_n_tors.py ${trk} --save-stats stat/curv_tors.tsv
-
+  ##### DSI analysis
+  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/dsi_analysis.sh ${trk}
 
   singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/hstack_tsv.py ${stat_track} stat/curv_tors.tsv ${stat_track}
 
