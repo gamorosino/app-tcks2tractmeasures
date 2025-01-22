@@ -71,9 +71,9 @@ You can also run the pipeline locally by preparing a configuration file and exec
 
 ## Outputs
 
-- **Statistics**: The results are exported to a `.tsv` file, including:
-  - Geometric measures computed using DSI Studio.
-  - Streamline properties (curvature and torsion) computed using DIPY.
+The results are saved in the `stat/tractmeasures.csv` file, which includes:
+  - **Geometric Measures**: Metrics such as length, span, volume, diameter, surface area, curl, elongation, and irregularity, calculated using DSI Studio.
+  - **Streamline Properties**: Average curvature and torsion values, computed using DIPY.
 
 ---
 
