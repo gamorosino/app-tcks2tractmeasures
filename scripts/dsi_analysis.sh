@@ -3,7 +3,7 @@
   
   trk=$1
   dsi_stat=$2
-  
+
   gzip -c ${trk} > data.${trk##*/}.gz
 
   dsi_studio --action=exp --source=data.${trk##*/}.gz --output=data.${trk##*/}.tt.gz
@@ -11,8 +11,8 @@
   rm -f data.${trk##*/}.gz
 
   # move file to tt folder
-  mkdir -p tt
-  tt=tt/$( basename ${trk//'.trk'/''} ).tt.gz
+  mkdir -p tts
+  tt=tts/$( basename ${trk//'.trk'/''} ).tt.gz
   mv data.${trk##*/}.tt.gz ${tt}
 
   ##### analyze tt file

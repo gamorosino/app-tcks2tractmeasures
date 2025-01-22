@@ -11,6 +11,8 @@ t2w=$(jq -r .t2 config.json)
 parc=$(jq -r .parc config.json)
 mask=$(jq -r .mask config.json)
 
+trks=./trks
+
 # Assign the first available field to 'anat'
 if [ -n "$t1w" ] && [ "$t1w" != "null" ]; then
     anat=$t1w
@@ -26,42 +28,20 @@ else
 fi
 
 
-for tck in $( ls ${tcks}/*.tck ); do
-  
-  ##### Dipy analysis
-  echo "processing track" ${tck} "..."
-  trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
+##### Dipy analysis
+dipy_stat_dir=./dipy_stat
+[ -d ${dipy_stat_dir} ] || { mkdir ${dipy_stat_dir}; }
+singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/run_dipy_analysis.sh ${tcks} ${trks} ${anat} ${dipy_stat_dir} 
 
-  mkdir ./dipy_stat
-  dipy_stat=./dipy_stat/$( basename ${trk//'.trk'/''} ).tsv
+##### DSI analysis
+dsi_stat_dir=./dsi_stat
+[ -d ${dsi_stat_dir} ] || { mkdir ${dsi_stat_dir}; }
+singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/run_dsi_analysis.sh ${trks} ${dsi_stat_dir}
 
-  singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/dipy_analysis.sh ${tck} ${anat} ${dipy_stat}
-
-  cat ${dipy_stat}
-
-  
-
-  ##### DSI analysis
-  mkdir -p ./dsi_stat
-  dsi_stat=./dsi_stat/$( basename ${trk//'.trk'/''} ).tsv
-  
-  singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scripts/dsi_analysis.sh ${trk} ${dsi_stat}
-
-  cat ${dsi_stat}
-
-  ##### merging results
-
-  mkdir ./stat
-  stat_track=./stat/$( basename ${trk//'.trk'/''} ).tsv
-
-  singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/vstack_tsv.py ${dsi_stat} ${dipy_stat} ${stat_track} 
+##### merging results
+stat_dir=./stat
+output=${stat_dir}/tractmeasures.tsv
+[ -d ${stat_dir} ] || { mkdir ${stat_dir} ; }
+singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/run_stack_tsv.sh ${dsi_stat_dir} ${dipy_stat_dir} ${stat_dir} ${output}
 
 
-  cat ${stat_track}
-
-done
-
-##### Merge tractmeasure files in one
-
-singularity exec -e docker://brainlife/dipy:1.4.1 python ./scripts/merge_tractmeasures.py ./stat ./stat/tractmeasures.tsv
-echo "Output file stored as: "stat/tractmeasures.tsv

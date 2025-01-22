@@ -2,6 +2,7 @@
   tck=$1
   anat=$2
   stat=$3
+  trk=$4
   
   exists () {                      			
 		if [ $# -lt 1 ]; then
@@ -22,11 +23,14 @@
 
   ##### Convert tck to trk
 
-  [ -d ./trk ] || {  mkdir ./trk; }
+  if [ -z $trk ]; then
+  
+    [ -d ./trk ] || {  mkdir ./trk; }
 
-  trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
+    trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
+  fi
 
-  [ $( exists ${trk}  ) -eq 0  ] && {  python ./scripts/tck2trk.py ${anat} ${tck}; mv ${tck//'.tck'/'.trk'} ./trk; }
+  [ $( exists ${trk}  ) -eq 0  ] && {  python ./scripts/tck2trk.py ${anat} ${tck}; mv ${tck//'.tck'/'.trk'} ${trk}; }
 
   echo 'Calculate curvature and torsion using dipy...'
   

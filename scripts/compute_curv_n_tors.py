@@ -52,13 +52,13 @@ def calculate_tract_properties(tractogram, save_stats=None):
     torsions = [compute_torsion(s) for s in streamlines]
     
     # Compute the bundle-wide averages
-    mean_curvature = np.nanmean(curvatures)
+    mean_curvature_ = np.nanmean(curvatures)
     mean_torsion = np.nanmean(torsions)
     
     # Prepare the output as a DataFrame with two rows
     data = {
         "Metric": ["curvature(1/mm)", "torsion(1/mm)"],
-        "Value": [mean_curvature, mean_torsion]
+        "Value": [mean_curvature_, mean_torsion]
     }
     df = pd.DataFrame(data)
 
