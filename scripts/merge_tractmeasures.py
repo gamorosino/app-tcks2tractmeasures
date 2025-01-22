@@ -31,8 +31,17 @@ def process_tract_files(folder_path, output_file):
     # Add the "type of measure" as the first column
     combined_df.insert(0, "Type of Measure", measure_type)
     
-    # Save the result to a new file
-    combined_df.to_csv(output_file, sep="\t", index=False)
+    # Transpose the DataFrame (swap rows and columns)
+    transposed_df = combined_df.T
+    
+    # Set the new column titles with "structureID" as the first column
+    transposed_df.columns = transposed_df.iloc[0]  # Use the first row as column headers
+    transposed_df = transposed_df[1:]  # Drop the first row (now used as headers)
+    transposed_df.insert(0, "structureID", transposed_df.index)  # Add "structureID" as the first column
+    transposed_df.reset_index(drop=True, inplace=True)  # Reset the index to be numeric
+    
+    # Save the transposed result to a new file
+    transposed_df.to_csv(output_file, sep="\t", index=False)
     print(f"Data successfully saved to {output_file}")
 
 if __name__ == "__main__":
