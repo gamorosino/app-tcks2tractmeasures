@@ -21,7 +21,14 @@ for dsi_stat in $( ls ${dsi_stat_dir}/*.tsv ); do
 
 done
 
+output_tsv=${output//'.csv'/'.tsv'}
 
 python ${SCRIPT_DIR}/merge_tractmeasures.py ${merge_dir} ${output}
 
+python  ${SCRIPT_DIR}/tsv2csv.py ${output_tsv} ${output}
+
+rm ${output_tsv}
+
 [ -d $merge_dir ] && { rm -rf $merge_dir; }
+
+echo Data successfully saved to ${output}

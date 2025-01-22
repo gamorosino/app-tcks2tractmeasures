@@ -40,7 +40,7 @@ singularity exec --nv -e docker://dsistudio/dsistudio:hou-2024-12-26 bash ./scri
 
 ##### merging results
 stat_dir=./stat
-output=${stat_dir}/tractmeasures.tsv
+output=${stat_dir}/tractmeasures.csv
 [ -d ${stat_dir} ] || { mkdir ${stat_dir} ; }
 singularity exec -e docker://brainlife/dipy:1.4.1 bash ./scripts/run_stack_n_merge.sh ${dsi_stat_dir} ${dipy_stat_dir} ${stat_dir} ${output}
 
