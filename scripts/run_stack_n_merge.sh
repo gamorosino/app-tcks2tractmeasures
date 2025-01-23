@@ -23,7 +23,7 @@ done
 
 output_tsv=${output//'.csv'/'.tsv'}
 
-python ${SCRIPT_DIR}/merge_tractmeasures.py ${merge_dir} ${output}
+python ${SCRIPT_DIR}/merge_tractmeasures.py ${merge_dir} ${output_tsv}
 
 python  ${SCRIPT_DIR}/tsv2csv.py ${output_tsv} ${output}
 
