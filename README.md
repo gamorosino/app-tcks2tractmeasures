@@ -41,20 +41,23 @@ You can run the `tcks2tractmeasures` app on the [Brainlife.io platform](https://
    Replace `<project_id>`, and input IDs with the appropriate values. The output will be saved in the specified project.
 
 ---
+Here's the updated section for the **README.md** to include details about running the `main.sh` script with the optional output directory:
+
+---
 
 ### Running Locally
 
-You can also run the pipeline locally by preparing a configuration file and executing the scripts.
+You can run the pipeline locally either by using a configuration file or by directly passing the input paths.
 
-#### Steps:
+#### **Option 1: Using a Configuration File**
 
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/gamorosino/app-tcks2tractmeasures.git
    cd app-tcks2tractmeasures
    ```
 
-2. Prepare a `config.json` file to specify input paths and output options. Example:
+2. **Prepare a `config.json` file** to specify input paths and output options. Example:
    ```json
    {
        "tcks": "/path/to/tcks",
@@ -62,10 +65,25 @@ You can also run the pipeline locally by preparing a configuration file and exec
    }
    ```
 
-3. Execute the script:
+3. **Execute the script:**
    ```bash
    ./main
    ```
+
+The results will be saved in the `./stat/tractmeasures.csv` relative to the directory where the script is executed.
+
+#### **Option 2: Using `main.sh` Script**
+
+Alternatively, you can use the `main.sh` script, which avoids the use of a `config.json` file by directly taking the full paths of the input files as arguments:
+
+   ```bash
+   ./main.sh <tractogram.tck> <anatomy_image.nii> [outputdir]
+   ```
+
+- `<tractogram.tck>`: Path to the TCK file(s) folder.
+- `<anatomy_image.nii>`: Path to the anatomical file (NIfTI format).
+- `[outputdir]` (optional): Path to the output directory where the results will be stored. If not provided, the results are saved in the same directory where the script is executed. 
+If the `outputdir` is not specified, the results will be saved in the `./stat/tractmeasures.csv` relative to the directory where the script is executed.
 
 ---
 
