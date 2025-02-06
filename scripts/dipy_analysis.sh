@@ -4,6 +4,8 @@
   stat=$3
   trk=$4
   
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/"
+
   exists () {                      			
 		if [ $# -lt 1 ]; then
 		    echo $0: "usage: exists <filename> "
@@ -25,13 +27,13 @@
 
   if [ -z $trk ]; then
   
-    [ -d ./trk ] || {  mkdir ./trk; }
+    [ -d ${SCRIPT_DIR}/trk ] || {  mkdir ${SCRIPT_DIR}/trk; }
 
-    trk=./trk/$( basename ${tck//'.tck'/'.trk'} )
+    trk=${SCRIPT_DIR}/trk/$( basename ${tck//'.tck'/'.trk'} )
   fi
 
-  [ $( exists ${trk}  ) -eq 0  ] && {  python ./scripts/tck2trk.py ${anat} ${tck}; mv ${tck//'.tck'/'.trk'} ${trk}; }
+  [ $( exists ${trk}  ) -eq 0  ] && {  python ${SCRIPT_DIR}/tck2trk.py ${anat} ${tck}; mv ${tck//'.tck'/'.trk'} ${trk}; }
 
   echo 'Calculate curvature and torsion using dipy...'
   
-  python ./scripts/compute_curv_n_tors.py ${trk} --save-stats ${stat}
+  python ${SCRIPT_DIR}/compute_curv_n_tors.py ${trk} --save-stats ${stat}
