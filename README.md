@@ -41,9 +41,6 @@ You can run the `tcks2tractmeasures` app on the [Brainlife.io platform](https://
    Replace `<project_id>`, and input IDs with the appropriate values. The output will be saved in the specified project.
 
 ---
-Here's the updated section for the **README.md** to include details about running the `main.sh` script with the optional output directory:
-
----
 
 ### Running Locally
 
