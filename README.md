@@ -1,5 +1,5 @@
 
-# tcks2tractmeasures
+# Tract Shape Analysis (tcks2tractmeasures)
 
 `tcks2tractmeasures` is a pipeline for processing and analyzing tractography data. It computes a range of tract-specific metrics using **DSI Studio** (for geometric measures like length, area, and elongation) and **DIPY** (for advanced measures like curvature and torsion). Results are exported as structured statistics for further analysis.
 
