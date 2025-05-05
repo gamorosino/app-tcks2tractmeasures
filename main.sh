@@ -43,7 +43,7 @@ singularity exec -e docker://brainlife/dipy:1.4.1 bash ${run_dipy} ${tcks} ${trk
 ##### DSI analysis
 dsi_stat_dir=${outputdir}/dsi_stat
 [ -d ${dsi_stat_dir} ] || { mkdir ${dsi_stat_dir}; }
-singularity exec --nv -e docker://dsistudio/dsistudio:hou-2025-01-30 bash ${run_dsi} ${trks} ${dsi_stat_dir}
+singularity exec -e docker://dsistudio/dsistudio:hou-2025-04-29 bash ${run_dsi} ${trks} ${dsi_stat_dir}
 
 ##### merging results
 stat_dir=${outputdir}//stat
