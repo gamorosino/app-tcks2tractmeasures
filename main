@@ -5,12 +5,52 @@
 
 # Extract fields from config.json
 
-tcks=$(jq -r .tcks config.json)
+
 t1w=$(jq -r .t1 config.json)
 t2w=$(jq -r .t2 config.json)
 parc=$(jq -r .parc config.json)
 mask=$(jq -r .mask config.json)
 
+resolved_tcks_dir="null"
+
+expand_path() {
+    local p="$1"
+    [[ -z "$p" || "$p" == "null" ]] && { echo "$p"; return; }
+
+    p="${p/#\~/$HOME}"
+    realpath "$p"
+}
+
+tcks=$(expand_path "$(jq -r '.tcks' config.json)")
+
+if [[ "$tcks" != "null" && -n "$tcks" ]]; then
+
+    if [[ -d "$tcks" ]]; then
+        :
+    else
+        echo "[WARN] tcks is not a directory: $tcks"
+        echo "[WARN] checking parent folder instead..."
+        tcks="$(dirname "$tcks")"
+    fi
+
+    # prefer nested tcks folder if it exists
+    if [[ -d "$tcks/tcks" ]]; then
+        tcks="$tcks/tcks"
+    fi
+
+    # check that we actually have tractograms
+    shopt -s nullglob
+    tck_files=("$tcks"/*.tck)
+    shopt -u nullglob
+
+    if [[ ${#tck_files[@]} -eq 0 ]]; then
+        echo "Error: no .tck files found in directory: $tcks" >&2
+        exit 1
+    fi
+
+    resolved_tcks_dir="$tcks"
+fi
+tcks=${resolved_tcks_dir}
 trks=./trks
 
 # Assign the first available field to 'anat'
