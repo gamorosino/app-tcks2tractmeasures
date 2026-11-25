@@ -1,6 +1,38 @@
 
 # Tract Shape Analysis (tcks2tractmeasures)
 
+<!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
+
+> **Computes tract shape measures (length, span, area, volume, elongation, curvature, torsion and more) for each tract in a tcks folder with DSI Studio and DIPY and merges them into one tractmeasures CSV.**
+
+Converts each .tck to .trk using a reference image, computes geometric shape statistics with DSI Studio and curvature/torsion with DIPY, and stacks and merges them into stat/tractmeasures.csv. Only one reference image is needed: the first available of T1w, T2w, parcellation or mask is used. Use it to characterise tract morphology for group analyses.
+
+| | |
+|---|---|
+| 📥 **Inputs** | `neuro/tcks` · `neuro/anat/t1w` (optional) · `neuro/anat/t2w` (optional) · `neuro/mask` (optional) · `neuro/parcellation/volume` (optional) |
+| 📤 **Outputs** | `neuro/tractmeasures` |
+| 🐳 **Container** | `brainlife/dipy:1.4.1` |
+| ⚙️ **Resources** | 1 CPUs · 0.92 h walltime |
+| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.844](https://doi.org/10.25663/brainlife.app.844) |
+
+#### 📥 Inputs
+
+| Input | Datatype | Required | Description |
+|---|---|---|---|
+| `tcks` | `neuro/tcks` | yes | Directory of per-tract .tck files. Must contain at least one .tck file. |
+| `t1` | `neuro/anat/t1w` | no | T1-weighted reference image (used first if present). |
+| `t2` | `neuro/anat/t2w` | no | T2-weighted reference image (used if no T1w is given). |
+| `mask` | `neuro/mask` | no | Mask used as reference image if no anatomical image is given. |
+| `parc` | `neuro/parcellation/volume` | no | Parcellation used as reference image if no anatomical image is given. |
+
+#### 📤 Outputs
+
+| Output | Datatype | Description |
+|---|---|---|
+| `stat` | `neuro/tractmeasures` | Tract measures table (tractmeasures.csv) with one row per tract and DSI Studio and DIPY shape metrics. |
+
+<!-- brainlife-app:end -->
+
 `tcks2tractmeasures` is a pipeline for processing and analyzing tractography data. It computes a range of tract-specific metrics using **DSI Studio** (for geometric measures like length, area, and elongation) and **DIPY** (for advanced measures like curvature and torsion). Results are exported as structured statistics for further analysis.
 
 ---
